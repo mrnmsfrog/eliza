@@ -162,12 +162,18 @@ export class ClientBase extends EventEmitter {
         const email = this.twitterConfig.TWITTER_EMAIL;
         let retries = this.twitterConfig.TWITTER_RETRY_LIMIT;
         const twitter2faSecret = this.twitterConfig.TWITTER_2FA_SECRET;
+        const cookies = this.twitterConfig.TWITTER_COOKIES;
+
+        console.log(this.twitterConfig)
 
         if (!username) {
             throw new Error("Twitter username not configured");
         }
 
-        const cachedCookies = await this.getCachedCookies(username);
+        const cachedCookies = cookies ? JSON.parse(cookies) : await this.getCachedCookies(username);
+
+        console.log(cachedCookies, cookies)
+        if (!cachedCookies) throw new Error("Failed to load twitter cookies");
 
         if (cachedCookies) {
             elizaLogger.info("Using cached cookies");

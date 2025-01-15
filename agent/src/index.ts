@@ -11,7 +11,7 @@ import { SlackClientInterface } from "@elizaos/client-slack";
 import { TelegramClientInterface } from "@elizaos/client-telegram";
 import { TwitterClientInterface } from "@elizaos/client-twitter";
 // import { ReclaimAdapter } from "@elizaos/plugin-reclaim";
-import { PrimusAdapter } from "@elizaos/plugin-primus";
+// import { PrimusAdapter } from "@elizaos/plugin-primus";
 
 import {
     AgentRuntime,
@@ -42,7 +42,7 @@ import createGoatPlugin from "@elizaos/plugin-goat";
 import { DirectClient } from "@elizaos/client-direct";
 import { ThreeDGenerationPlugin } from "@elizaos/plugin-3d-generation";
 import { abstractPlugin } from "@elizaos/plugin-abstract";
-import { akashPlugin } from "@elizaos/plugin-akash";
+// import { akashPlugin } from "@elizaos/plugin-akash";
 import { alloraPlugin } from "@elizaos/plugin-allora";
 import { aptosPlugin } from "@elizaos/plugin-aptos";
 import { artheraPlugin } from "@elizaos/plugin-arthera";
@@ -491,6 +491,8 @@ function initializeDatabase(dataDir: string) {
             process.env.SUPABASE_ANON_KEY
         );
 
+        console.log(db)
+
         // Test the connection
         db.init()
             .then(() => {
@@ -563,10 +565,10 @@ export async function initializeClients(
     elizaLogger.log("initializeClients", clientTypes, "for", character.name);
 
     // Start Auto Client if "auto" detected as a configured client
-    if (clientTypes.includes(Clients.AUTO)) {
-        const autoClient = await AutoClientInterface.start(runtime);
-        if (autoClient) clients.auto = autoClient;
-    }
+    // if (clientTypes.includes(Clients.AUTO)) {
+    //     const autoClient = await AutoClientInterface.start(runtime);
+    //     if (autoClient) clients.auto = autoClient;
+    // }
 
     if (clientTypes.includes(Clients.DISCORD)) {
         const discordClient = await DiscordClientInterface.start(runtime);
@@ -593,21 +595,21 @@ export async function initializeClients(
             clients.farcaster = farcasterClient;
         }
     }
-    if (clientTypes.includes("lens")) {
-        const lensClient = new LensAgentClient(runtime);
-        lensClient.start();
-        clients.lens = lensClient;
-    }
+    // if (clientTypes.includes("lens")) {
+    //     const lensClient = new LensAgentClient(runtime);
+    //     lensClient.start();
+    //     clients.lens = lensClient;
+    // }
 
     elizaLogger.log("client keys", Object.keys(clients));
 
     // TODO: Add Slack client to the list
     // Initialize clients as an object
 
-    if (clientTypes.includes("slack")) {
-        const slackClient = await SlackClientInterface.start(runtime);
-        if (slackClient) clients.slack = slackClient; // Use object property instead of push
-    }
+    // if (clientTypes.includes("slack")) {
+    //     const slackClient = await SlackClientInterface.start(runtime);
+    //     if (slackClient) clients.slack = slackClient; // Use object property instead of push
+    // }
 
     function determineClientType(client: Client): string {
         // Check if client has a direct type identifier
@@ -715,20 +717,20 @@ export async function createAgent(
         elizaLogger.log("modelProvider", character.modelProvider);
         elizaLogger.log("token", token);
     }
-    if (
-        process.env.PRIMUS_APP_ID &&
-        process.env.PRIMUS_APP_SECRET &&
-        process.env.VERIFIABLE_INFERENCE_ENABLED === "true"
-    ) {
-        verifiableInferenceAdapter = new PrimusAdapter({
-            appId: process.env.PRIMUS_APP_ID,
-            appSecret: process.env.PRIMUS_APP_SECRET,
-            attMode: "proxytls",
-            modelProvider: character.modelProvider,
-            token,
-        });
-        elizaLogger.log("Verifiable inference primus adapter initialized");
-    }
+    // if (
+    //     process.env.PRIMUS_APP_ID &&
+    //     process.env.PRIMUS_APP_SECRET &&
+    //     process.env.VERIFIABLE_INFERENCE_ENABLED === "true"
+    // ) {
+    //     verifiableInferenceAdapter = new PrimusAdapter({
+    //         appId: process.env.PRIMUS_APP_ID,
+    //         appSecret: process.env.PRIMUS_APP_SECRET,
+    //         attMode: "proxytls",
+    //         modelProvider: character.modelProvider,
+    //         token,
+    //     });
+    //     elizaLogger.log("Verifiable inference primus adapter initialized");
+    // }
 
     return new AgentRuntime({
         databaseAdapter: db,
@@ -894,10 +896,10 @@ export async function createAgent(
             getSecret(character, "HYPERLIQUID_TESTNET")
                 ? hyperliquidPlugin
                 : null,
-            getSecret(character, "AKASH_MNEMONIC") &&
-            getSecret(character, "AKASH_WALLET_ADDRESS")
-                ? akashPlugin
-                : null,
+            // getSecret(character, "AKASH_MNEMONIC") &&
+            // getSecret(character, "AKASH_WALLET_ADDRESS")
+            //     ? akashPlugin
+            //     : null,
             getSecret(character, "QUAI_PRIVATE_KEY") ? quaiPlugin : null,
             getSecret(character, "RESERVOIR_API_KEY")
                 ? createNFTCollectionsPlugin()

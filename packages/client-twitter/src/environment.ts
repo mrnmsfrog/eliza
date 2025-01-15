@@ -29,14 +29,17 @@ const twitterUsernameSchema = z
 export const twitterEnvSchema = z.object({
     TWITTER_DRY_RUN: z.boolean(),
     TWITTER_USERNAME: z.string().min(1, "X/Twitter username is required"),
-    TWITTER_PASSWORD: z.string().min(1, "X/Twitter password is required"),
-    TWITTER_EMAIL: z.string().email("Valid X/Twitter email is required"),
+    // TWITTER_PASSWORD: z.string().min(1, "X/Twitter password is required"),
+    TWITTER_PASSWORD: z.string().optional(),
+    // TWITTER_EMAIL: z.string().email("Valid X/Twitter email is required"),
+    TWITTER_EMAIL: z.string().optional(),
     MAX_TWEET_LENGTH: z.number().int().default(DEFAULT_MAX_TWEET_LENGTH),
     TWITTER_SEARCH_ENABLE: z.boolean().default(false),
     TWITTER_2FA_SECRET: z.string(),
     TWITTER_RETRY_LIMIT: z.number().int(),
     TWITTER_POLL_INTERVAL: z.number().int(),
     TWITTER_TARGET_USERS: z.array(twitterUsernameSchema).default([]),
+    TWITTER_COOKIES: z.string().optional(),
     // I guess it's possible to do the transformation with zod
     // not sure it's preferable, maybe a readability issue
     // since more people will know js/ts than zod
@@ -172,6 +175,8 @@ export async function validateTwitterConfig(
                 runtime.getSetting("TWITTER_TARGET_USERS") ||
                     process.env.TWITTER_TARGET_USERS
             ),
+
+            TWITTER_COOKIES: runtime.getSetting("TWITTER_COOKIES") || process.env.TWITTER_COOKIES,
 
             // int in minutes
             POST_INTERVAL_MIN: safeParseInt(
